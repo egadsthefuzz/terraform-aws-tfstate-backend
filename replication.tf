@@ -3,6 +3,9 @@ resource "aws_iam_role" "replication" {
 
   name               = format("%s-replication", module.base_label.id)
   assume_role_policy = data.aws_iam_policy_document.replication_sts[0].json
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 data "aws_iam_policy_document" "replication_sts" {
@@ -27,6 +30,9 @@ resource "aws_iam_policy" "replication" {
 
   name   = format("%s-replication", module.base_label.id)
   policy = data.aws_iam_policy_document.replication[0].json
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 data "aws_iam_policy_document" "replication" {
@@ -63,4 +69,7 @@ resource "aws_iam_role_policy_attachment" "replication" {
   count      = var.s3_replication_enabled ? 1 : 0
   role       = aws_iam_role.replication[0].name
   policy_arn = aws_iam_policy.replication[0].arn
+  lifecycle {
+    prevent_destroy = true
+  }
 }
